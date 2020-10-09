@@ -14,7 +14,7 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen
-          name="Screen1"
+          name="ToDo"
           component={ Screen1 }
         />
         <Stack.Screen
