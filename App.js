@@ -1,16 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useReducer, useState, useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 
+import { taskAction } from "./actions/task";
 import { Screen1 } from "./pages/Screen1";
 import { Screen2 } from "./pages/Screen2";
 
 const Stack = createStackNavigator();
 
+const TaskContext = React.createContext(null);
+
 export default function App() {
+  const [stateTask, dispatch] = useReducer(taskAction, []);
+  const value = { stateTask, dispatch };
 
   return (
+    <TaskContext.Provider value={value}>
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen
@@ -25,6 +31,7 @@ export default function App() {
         />
       </Stack.Navigator>
     </NavigationContainer>
+    </TaskContext.Provider>
   );
 }
 
@@ -36,3 +43,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+
+export {
+  TaskContext
+}
+
+

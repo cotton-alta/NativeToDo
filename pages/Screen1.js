@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Image, TextInput, StyleSheet, Text, View, Button, TouchableOpacity,
 Keyboard } from 'react-native';
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import AsyncStorage from '@react-native-community/async-storage';
+import { TaskContext } from "../App";
 
 const Screen1 = ({ navigation }) => {
   const [tasks, setTasks] = useState([]);
-  const [newTask, setNewTask] = useState("");
+  const { stateTask, dispatch } = useContext(TaskContext);
 
   useEffect(() => {
     getData();
@@ -35,48 +36,31 @@ const Screen1 = ({ navigation }) => {
           datas.push({ name: return_value, id: key });
         }
       }
-      setTasks(datas);
+      dispatch({
+        type: "init",
+        payload: datas
+      });
     } catch(e) {
       console.log(e);
     }
-  }
+  };
   
-  const storeData = async (key, value) => {
+  const deleteTask = async (id) => {
+    const re_tasks = stateTask.filter(task => task.id !== id);
     try {
-      await AsyncStorage.setItem(str(key), value)
-    } catch (e) {
+      await AsyncStorage.removeItem(String(id))
+      dispatch({
+        type: "delete",
+        payload: re_tasks
+      });
+    } catch(e) {
       console.log(e);
     }
-  };
-  
-  const deleteTask = (id) => {
-    const re_tasks = tasks.filter(task => task.id !== id);
-    setTasks(re_tasks);
-  };
-
-  const textChange = (text) => {
-    setNewTask(text);
-  };
-
-  const addTask = () => {
-    if(tasks.length > 0) {
-      let array = [ ...tasks ];
-      const latest_id = array[array.length - 1]["id"] + 1;
-      array.push({ name: newTask, id: latest_id});
-      setTasks(array);
-      storeData(latest_id, newTask);
-    } else {
-      let array = [{ name: newTask, id: 0 }];
-      setTasks(array);
-      storeData(0, newTask);
-    }
-    setNewTask("");
-    Keyboard.dismiss();
   };
 
   const RenderList = () => {
     return (
-      tasks.map(task => {
+      stateTask.map(task => {
         return (
           <View key={task.id} style={styles.task_wrapper}>
             <Text style={styles.task_text}>{task.name}</Text>
@@ -110,21 +94,6 @@ const Screen1 = ({ navigation }) => {
     <View style={styles.container}>
       <Header />
       <RenderList />
-      <TextInput
-        style={styles.input}
-        value={newTask}
-        onChangeText={(e) => textChange(e)}
-      />
-      <TouchableOpacity
-        style={styles.button_wrapper}
-        onPress={() => addTask()}
-      >
-        <Text style={styles.button_text}>ADD</Text>
-      </TouchableOpacity>
-      {/*<Button
-        title="Screen2"
-        onPress={() => navigation.navigate("Screen2")}
-      />*/}
     </View>
   );
 };
@@ -181,29 +150,5 @@ const styles = StyleSheet.create({
     margin: 9,
     height: 40,
     width: 40
-  },
-  input: {
-    width: "90%",
-    height: 50,
-    lineHeight: 50,
-    fontSize: 25,
-    borderColor: "gray",
-    borderWidth: 1,
-    margin: 20,
-    borderRadius: 5
-  },
-  button_wrapper: {
-    backgroundColor: "gray",
-    height: 50,
-    width: "50%",
-    borderRadius: 5
-  },
-  button_text: {
-    lineHeight: 50,
-    height: 50,
-    width: "100%",
-    color: "#fff",
-    fontSize: 20,
-    textAlign: "center"
   }
 });
