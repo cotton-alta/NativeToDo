@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Image, TextInput, StyleSheet, Text, View, Button, TouchableOpacity,
+import { ScrollView, Image, TextInput, StyleSheet, Text, View, Button, TouchableOpacity,
 Keyboard } from 'react-native';
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -15,6 +15,11 @@ const Screen1 = ({ navigation }) => {
   }, []);
 
   const getData = async () => {
+    try {
+      await AsyncStorage.clear()
+    } catch(e) {
+      // clear error
+    }
     let keys = []
     let datas = [] 
     try {
@@ -93,7 +98,9 @@ const Screen1 = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Header />
-      <RenderList />
+      <ScrollView style={styles.scroll_container}>
+        <RenderList />
+      </ScrollView>
     </View>
   );
 };
@@ -109,6 +116,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
+    justifyContent: "center"
+  },
+  scroll_container: {
+    width: "90%",
   },
   header_wrapper: {
     width: "100%",
@@ -126,7 +137,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   task_wrapper: {
-    width: "90%",
+    width: "100%",
     height: 60,
     borderBottomColor: "gray",
     borderBottomWidth: 2,
@@ -134,7 +145,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   task_text: {
-    fontSize: 25,
+    fontSize: 20,
     lineHeight: 60,
   },
   check_wrapper: {

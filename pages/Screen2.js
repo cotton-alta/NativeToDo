@@ -8,7 +8,7 @@ import { TaskContext } from "../App";
 
 const Screen2 = ({ navigation }) => {
   const [newTask, setNewTask] = useState("");
-  const [alert, setAlert] = useState(false);
+  const [msgAlert, setMsgAlert] = useState(false);
   const { stateTask, dispatch } = useContext(TaskContext);
   
   const storeData = async (key, value) => {
@@ -42,7 +42,8 @@ const Screen2 = ({ navigation }) => {
 
   const addTask = () => {
     if(newTask.length > 15) {
-      setAlert(true);
+      setMsgAlert(true);
+      return;
     }
     if(getLatestKey !== null) {
       getLatestKey().then(key => {
@@ -57,7 +58,6 @@ const Screen2 = ({ navigation }) => {
   };
 
   const textChange = (text) => {
-    if(text.length > 15) return;
     setNewTask(text);
   };
 
@@ -80,7 +80,11 @@ const Screen2 = ({ navigation }) => {
         value={newTask}
         onChangeText={(e) => textChange(e)}
       />
-      <Text style={styles.alert_box}>10文字以内で入力してください。</Text>
+      { msgAlert &&
+      <Text style={styles.alert_box}>
+        10文字以内で入力してください。
+      </Text>
+      }
       <TouchableOpacity
         style={styles.button_wrapper}
         onPress={() => addTask()}
