@@ -16,10 +16,12 @@ export default function App() {
         <Stack.Screen
           name="ToDo"
           component={ Screen1 }
+          options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="Screen2"
+          name="ADD"
           component={ Screen2 }
+          options={{ headerShown: false }}
         />
       </Stack.Navigator>
     </NavigationContainer>
