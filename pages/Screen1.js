@@ -15,11 +15,6 @@ const Screen1 = ({ navigation }) => {
   }, []);
 
   const getData = async () => {
-    try {
-      await AsyncStorage.clear()
-    } catch(e) {
-      // clear error
-    }
     let keys = []
     let datas = [] 
     try {
